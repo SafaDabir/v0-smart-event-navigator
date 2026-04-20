@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import {
-  Gate,
+  Ticket,
   UtensilsCrossed,
   Droplet,
   Users,
@@ -17,7 +17,7 @@ const initialZones: Zone[] = [
   {
     id: 'entry',
     name: 'Entry Gates',
-    icon: <Gate />,
+    icon: <Ticket />,
     crowd: 'medium',
     waitTime: 15,
     description: 'Main entrance queue',
