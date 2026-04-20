@@ -53,7 +53,6 @@ export default function Home() {
   const [showRoute, setShowRoute] = useState(false)
   const [suggestedRoute, setSuggestedRoute] = useState<Zone[]>([])
 
-  // Simulate live crowd updates
   const simulateUpdate = useCallback(() => {
     setZones((prevZones) =>
       prevZones.map((zone) => {
@@ -72,34 +71,40 @@ export default function Home() {
   }, [])
 
   const findBestRoute = useCallback(() => {
-    // Sort zones by wait time (ascending) to find the least crowded path
     const sorted = [...zones].sort((a, b) => a.waitTime - b.waitTime)
     setSuggestedRoute(sorted)
     setShowRoute(true)
   }, [zones])
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-gray-950 text-white">
       <DashboardHeader />
 
-      <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-950 to-gray-900">
+
         {/* Action buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-8">
+        <div className="flex flex-col sm:flex-row gap-4 mb-6">
           <Button
             onClick={simulateUpdate}
             variant="outline"
-            className="border-border hover:bg-muted"
+            className="border-gray-700 text-white hover:bg-gray-800"
           >
             🔄 Refresh Data
           </Button>
+
           <Button
             onClick={findBestRoute}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground flex items-center gap-2"
+            className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2 shadow-md"
           >
             <ArrowRight className="w-4 h-4" />
             Find Best Route
           </Button>
         </div>
+
+        {/* AI Suggestion */}
+        <p className="mb-8 text-green-400 font-medium">
+          ✔ AI Suggestion: Use Washrooms → Lowest wait time → Saves ~10 mins
+        </p>
 
         {/* Zone grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -110,54 +115,64 @@ export default function Home() {
 
         {/* Stats section */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+
           {/* Average wait time */}
-          <div className="bg-card border border-border rounded-lg p-6">
-            <p className="text-sm text-muted-foreground mb-2">
+          <div className="bg-gray-900 border border-gray-800 rounded-lg p-6 shadow-lg">
+            <p className="text-sm text-gray-400 mb-2">
               Average Wait Time
             </p>
-            <p className="text-3xl font-bold text-foreground">
-              {Math.round(zones.reduce((sum, z) => sum + z.waitTime, 0) / zones.length)}{' '}
-              <span className="text-lg text-muted-foreground">min</span>
+            <p className="text-3xl font-bold text-white">
+              {Math.round(
+                zones.reduce((sum, z) => sum + z.waitTime, 0) / zones.length
+              )}{' '}
+              <span className="text-lg text-gray-400">min</span>
             </p>
           </div>
 
           {/* Busiest zone */}
-          <div className="bg-card border border-border rounded-lg p-6">
-            <p className="text-sm text-muted-foreground mb-2">Busiest Zone</p>
-            <p className="text-3xl font-bold text-foreground">
-              {zones.reduce((max, z) => (z.waitTime > max.waitTime ? z : max))
-                .name}
+          <div className="bg-gray-900 border border-gray-800 rounded-lg p-6 shadow-lg">
+            <p className="text-sm text-gray-400 mb-2">Busiest Zone</p>
+            <p className="text-3xl font-bold text-white">
+              {
+                zones.reduce((max, z) =>
+                  z.waitTime > max.waitTime ? z : max
+                ).name
+              }
             </p>
           </div>
 
           {/* Status overview */}
-          <div className="bg-card border border-border rounded-lg p-6">
-            <p className="text-sm text-muted-foreground mb-3">Zone Status</p>
+          <div className="bg-gray-900 border border-gray-800 rounded-lg p-6 shadow-lg">
+            <p className="text-sm text-gray-400 mb-3">Zone Status</p>
+
             <div className="space-y-2">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Low crowd</span>
-                <span className="font-bold text-green-600 dark:text-green-400">
+                <span className="text-gray-400">Low crowd</span>
+                <span className="font-bold text-green-400">
                   {zones.filter((z) => z.crowd === 'low').length}
                 </span>
               </div>
+
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">Medium crowd</span>
-                <span className="font-bold text-yellow-600 dark:text-yellow-400">
+                <span className="text-gray-400">Medium crowd</span>
+                <span className="font-bold text-yellow-400">
                   {zones.filter((z) => z.crowd === 'medium').length}
                 </span>
               </div>
+
               <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">High crowd</span>
-                <span className="font-bold text-red-600 dark:text-red-400">
+                <span className="text-gray-400">High crowd</span>
+                <span className="font-bold text-red-400">
                   {zones.filter((z) => z.crowd === 'high').length}
                 </span>
               </div>
             </div>
           </div>
+
         </div>
       </div>
 
-      {/* Best route modal */}
+      {/* Modal */}
       <BestRouteModal
         isOpen={showRoute}
         onClose={() => setShowRoute(false)}
